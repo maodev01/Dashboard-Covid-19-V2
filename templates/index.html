@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="es" class="dark">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard COVID-19 Colombia</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link href="/static/css/style.css" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#3B82F6',
+                        secondary: '#10B981',
+                        dark: '#1F2937',
+                        darker: '#111827',
+                        card: '#374151'
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+
+<body
+    class="bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-white font-sans antialiased transition-colors duration-300">
+    <div class="container mx-auto p-6">
+        <header class="mb-8 flex justify-between items-center">
+            <div class="w-full text-center relative">
+                <h1 class="text-4xl font-bold text-blue-600 dark:text-blue-500 mb-2">Dashboard COVID-19 Colombia</h1>
+                <p class="text-gray-500 dark:text-gray-400">Métricas y estadísticas en tiempo real</p>
+                <button id="theme-toggle"
+                    class="absolute right-0 top-0 p-2 rounded-full bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700 focus:outline-none focus:ring-4 focus:ring-gray-200 dark:focus:ring-gray-700 transition-all">
+                    <!-- Sun Icon -->
+                    <svg id="theme-toggle-light-icon" class="hidden w-6 h-6" fill="currentColor" viewBox="0 0 20 20"
+                        xmlns="http://www.w3.org/2000/svg">
+                        <path
+                            d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h1a1 1 0 100 2h-1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 000 2h1z"
+                            fill-rule="evenodd" clip-rule="evenodd"></path>
+                    </svg>
+                    <!-- Moon Icon -->
+                    <svg id="theme-toggle-dark-icon" class="hidden w-6 h-6" fill="currentColor" viewBox="0 0 20 20"
+                        xmlns="http://www.w3.org/2000/svg">
+                        <path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z"></path>
+                    </svg>
+                </button>
+            </div>
+        </header>
+
+        <!-- Filters -->
+        <div
+            class="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-lg mb-8 border border-gray-200 dark:border-gray-700 transition-colors duration-300">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Departamento</label>
+                    <select id="department-filter"
+                        class="w-full bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg px-4 py-2 focus:outline-none focus:border-blue-500 text-gray-900 dark:text-white transition-colors">
+                        <option value="">Todos</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Ciudad</label>
+                    <select id="city-filter"
+                        class="w-full bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg px-4 py-2 focus:outline-none focus:border-blue-500 text-gray-900 dark:text-white transition-colors">
+                        <option value="">Todas</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Género</label>
+                    <select id="gender-filter"
+                        class="w-full bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg px-4 py-2 focus:outline-none focus:border-blue-500 text-gray-900 dark:text-white transition-colors">
+                        <option value="">Todos</option>
+                        <option value="M">Masculino</option>
+                        <option value="F">Femenino</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        <!-- KPI Cards -->
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+            <div
+                class="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-lg border border-gray-200 dark:border-gray-700 transition-colors duration-300">
+                <h3 class="text-gray-500 dark:text-gray-400 text-sm font-medium uppercase">Casos Totales</h3>
+                <p id="total-cases" class="text-3xl font-bold text-gray-900 dark:text-white mt-2">-</p>
+            </div>
+            <div
+                class="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-lg border border-gray-200 dark:border-gray-700 transition-colors duration-300">
+                <h3 class="text-gray-500 dark:text-gray-400 text-sm font-medium uppercase">Fallecidos</h3>
+                <p id="total-deceased" class="text-3xl font-bold text-red-500 mt-2">-</p>
+            </div>
+            <div
+                class="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-lg border border-gray-200 dark:border-gray-700 transition-colors duration-300">
+                <h3 class="text-gray-500 dark:text-gray-400 text-sm font-medium uppercase">Recuperados</h3>
+                <p id="total-recovered" class="text-3xl font-bold text-green-500 dark:text-green-400 mt-2">-</p>
+            </div>
+            <div
+                class="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-lg border border-gray-200 dark:border-gray-700 transition-colors duration-300">
+                <h3 class="text-gray-500 dark:text-gray-400 text-sm font-medium uppercase">Activos</h3>
+                <p id="total-active" class="text-3xl font-bold text-yellow-500 dark:text-yellow-400 mt-2">-</p>
+            </div>
+        </div>
+
+        <!-- Charts Row 1 -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+            <div
+                class="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-lg border border-gray-200 dark:border-gray-700 transition-colors duration-300">
+                <h3 class="text-xl font-bold mb-4 text-gray-800 dark:text-gray-200">Fallecidos por Fecha</h3>
+                <canvas id="deceased-chart"></canvas>
+            </div>
+            <div
+                class="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-lg border border-gray-200 dark:border-gray-700 transition-colors duration-300">
+                <h3 class="text-xl font-bold mb-4 text-gray-800 dark:text-gray-200">Distribución por Edades</h3>
+                <canvas id="age-chart"></canvas>
+            </div>
+        </div>
+
+        <!-- Charts Row 2 -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+            <div
+                class="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-lg border border-gray-200 dark:border-gray-700 transition-colors duration-300">
+                <h3 class="text-xl font-bold mb-4 text-gray-800 dark:text-gray-200">Género (%)</h3>
+                <div class="h-64 flex justify-center">
+                    <canvas id="gender-chart"></canvas>
+                </div>
+            </div>
+            <div
+                class="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-lg border border-gray-200 dark:border-gray-700 transition-colors duration-300">
+                <h3 class="text-xl font-bold mb-4 text-gray-800 dark:text-gray-200">Estado de Casos (%)</h3>
+                <div class="h-64 flex justify-center">
+                    <canvas id="status-chart"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="/static/js/api.js"></script>
+    <script src="/static/js/charts.js"></script>
+    <script src="/static/js/main.js"></script>
+</body>
+
+</html>

@@ -1,0 +1,27 @@
+from pydantic import BaseModel
+from typing import List, Optional
+
+class Case(BaseModel):
+    fecha_reporte_web: Optional[str]
+    id_de_caso: Optional[str]
+    fecha_de_notificaci_n: Optional[str]
+    departamento: Optional[str]
+    departamento_nom: Optional[str]
+    ciudad_municipio: Optional[str]
+    ciudad_municipio_nom: Optional[str]
+    edad: Optional[str]
+    unidad_medida: Optional[str]
+    sexo: Optional[str]
+    fuente_tipo_contagio: Optional[str]
+    ubicacion: Optional[str]
+    estado: Optional[str]
+    pais_viajo_1_cod: Optional[str]
+    pais_viajo_1_nom: Optional[str]
+    recuperado: Optional[str]
+    fecha_inicio_sintomas: Optional[str]
+    fecha_muerte: Optional[str]
+    fecha_diagnostico: Optional[str]
+    fecha_recuperado: Optional[str]
+    tipo_recuperacion: Optional[str]
+    per_etn_ip6590: Optional[str]
+    nom_grupo: Optional[str]
